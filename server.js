@@ -7,6 +7,6 @@ webServer.get('/assets/*', function(request, response){
     response.sendfile(__dirname + '/site/assets/' + request.params[0]);
 });
 
-webServer.get('/', function(request, response){
+webServer.get('*', function(request, response){
     response.sendfile(__dirname + '/site/index.html');
 });
