@@ -4,6 +4,7 @@ var path      = require('path'),
     
 //setup webserver object
     webServer = express.createServer();
+webServer.use(express.bodyParser());
 webServer.listen(3005);
 
 
@@ -32,5 +33,13 @@ webServer.get('/:filename.:format?', function(request, response){
     }
   });
 });
+
+/** load our glossary module */
+var glossary = require('./server/glossary');
+
+/** use glossary methods for routes */
+webServer.get('/glossary/terms/:term?', glossary.index);
+webServer.post('/glossary/terms', glossary.create);
+webServer.put('/glossary/terms/:term', glossary.update);
 
 
