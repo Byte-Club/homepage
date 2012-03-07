@@ -1,4 +1,11 @@
 {
     "name": "Byteclub_Site",
-    "version": "1.0"    
+    "version": "1.0.0",
+    "dependencies": {
+      "express": "2.5.x",
+      "redis": "0.7.x"
+    },
+    "devDependencies": {
+      "mocha": "0.14.x"
+    }    
 }
