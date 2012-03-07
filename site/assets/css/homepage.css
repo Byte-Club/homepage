@@ -1,0 +1,12 @@
+body{
+  background-color: black;
+  color: rgb(0, 255, 0); 
+}
+
+#leetTitle{
+  position: absolute;
+  width: 800px;
+  height: 200px;
+  left: 50%; margin-left: -400px;
+  top: 50%; margin-top: -100px;
+}
