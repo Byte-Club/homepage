@@ -33,6 +33,7 @@ Glossary = {
   create: function(request, response){
     if(!request.body.term){ return response.send(400); }
     db.hsetnx('glossary:terms', request.body.term, request.body.definition || '', function(err, success){
+      if(err){ return response.send(500); }
       response.send(success ? 201 : 400);
     });
   },
@@ -41,13 +42,12 @@ Glossary = {
       expects spaces in terms to be _
   */
   update: function(request, response){
-    if(!request.params.term){ return response.send(400); }
     var cleanTerm = request.params.term.replace(/\_/g,' ');
     //console.log(cleanTerm);
     db.hexists('glossary:terms', cleanTerm, function(err, exists){
-      console.log(exists);
       if(exists){
         db.hset('glossary:terms', cleanTerm, request.body.definition || '', function(err, success){
+          if(err){ return response.send(500); }
           response.send(200);
         });
       } else {
