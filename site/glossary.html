@@ -1,34 +1,40 @@
 <html>
     <head>
       <title>ByteClub Glossary</title>
-	  <link rel="stylesheet" type="text/css" href="/site/assets/css/glossary.css" />
+      <link rel='stylesheet' type='text/css' href='assets/css/glossary.css'>
+
     </head>
-    <body>
-		<div id="header"class= "header">
-			<p>{ glossary }</p>
-		</div>
-		</div>
-        <form method='POST' action="/glossary/terms">
-              <label for="newTerm">New Term:</label>  
-              <input id="newTerm" type="text" name="term"><br>
-              <label for="newDefinition">Definition:</label>  
-              <input id="newDefinition" type="text" name="definition">
-              <input type="submit" value="Add">  
-        </form>  
-        <table>
-            <thead> 
-                <tr>
-                    <th>Term</th>
-                    <th>Definition</th>
-                </tr>
-            </thead>
-            <tbody> 
-                <tr>
-                    <td>first!</td>
-                    <td>the first term in the glossary</td>
-                </tr>
-            </tbody>
-        
-        </table>
-    </body>
-</html>
+        <body>
+                      <header>
+                              <div id='logo' ><span>{</span> glossary <span>}</span></div>
+          <div id='entryForm'>
+              <form method='POST' action="/glossary/terms">
+                    <input id="newTerm" type="text" name="term" placeholder='Search for a term'>
+                   <!-- <label for="newDefinition">Definition:</label>  
+                      <input id="newDefinition" type="text" name="definition">
+                      <input type="submit" value="Add"> -->
+              </form> 
+          </div>
+                      </header>
+
+                      <dl id='theList' class='layout'>
+                      </dl>
+                      <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+                      <script type='text/javascript'>
+                          var theList = $('#theList');
+                          $.ajax({
+                              url: 'glossary/terms',
+                              success: function(data){
+                                      //do something with the data
+                                      data.forEach(function(term){
+                                          for(var key in term){
+                                                 $('<dt>'+key+'</dt>').appendTo(theList);
+                                                 $('<dd>'+term[key]+'</dd>').appendTo(theList);
+                                                 
+                                              }
+                                      });
+                                  }
+                          });
+                      </script>
+        </body>
+    </html>
