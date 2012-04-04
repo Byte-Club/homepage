@@ -62,7 +62,7 @@ function defineTerm(evt) {
     var definitionElement = target.closest('dt').next('dd');
 
     //check for an existing "input" inside of the definition element
-    var inputBox = definitionElement.children('input');
+    var inputBox = definitionElement.children('textarea');
     if (inputBox.length !== 0) {
         //if one exists, focus it and exit
         inputBox.focus();
@@ -70,7 +70,12 @@ function defineTerm(evt) {
     }
 
     //create an input box
-    inputBox = $('<input type="text">');
+    inputBox = $('<textarea>');
+
+    //resize our div
+    var definitionHeight = definitionElement.height();
+    inputBox.css('height', definitionHeight);
+    definitionElement.css('height', definitionHeight)
 
     //set its value to the text that is already in the definition element
     inputBox.val(definitionElement.text());
@@ -95,7 +100,7 @@ function saveDefinition(evt) {
     var definitionElement = target.closest('dd');
 
     //the new definition is the value of the input box
-    var newDefinition = definitionElement.children('input').val();
+    var newDefinition = definitionElement.children('textarea').val();
 
     //the text of the nearest term (removing the "define this term" text from the button)
     var term = definitionElement.prev('dt').text().replace('define this term', '');
@@ -116,6 +121,7 @@ function saveDefinition(evt) {
             
             //put the newDefinition text into the definition element
             definitionElement.text(newDefinition);
+            definitionElement.css('height','auto');
         }
     });
 };
