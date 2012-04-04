@@ -22,7 +22,14 @@ Glossary = {
           termObj[term] =  terms[term];
           termList.push(termObj);
         }
-
+        termList.sort(function(a,b){
+            var aTerm, bTerm;
+            for(aTerm in a){ }
+            for(bTerm in b){ }            
+            if(aTerm.toLowerCase() > bTerm.toLowerCase()) { return 1; }
+            if(aTerm.toLowerCase() < bTerm.toLowerCase()) { return -1; }
+            else { return 0; }
+        });
         response.send(termList,200);
       });
     }
