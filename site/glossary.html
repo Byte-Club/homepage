@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
       <title>ByteClub Glossary</title>
@@ -8,33 +9,24 @@
                       <header>
                               <div id='logo' ><span>{</span> glossary <span>}</span></div>
           <div id='entryForm'>
-              <form method='POST' action="/glossary/terms">
-                    <input id="newTerm" type="text" name="term" placeholder='Search for a term'>
-                   <!-- <label for="newDefinition">Definition:</label>  
-                      <input id="newDefinition" type="text" name="definition">
-                      <input type="submit" value="Add"> -->
-              </form> 
+            <form method='POST' action="/glossary/terms">
+                  <input id="newTerm" type="text" name="term" placeholder='Search for a term'>
+                 <!-- <label for="newDefinition">Definition:</label>  
+                    <input id="newDefinition" type="text" name="definition"> -->
+                    <input id="addTerm" type="submit" value="Add"> 
+            </form>
           </div>
                       </header>
 
-                      <dl id='theList' class='layout'>
+                      <dl id='theList'>
                       </dl>
+                      
+                      
+                      <!-- include jquery -->
                       <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
-                      <script type='text/javascript'>
-                          var theList = $('#theList');
-                          $.ajax({
-                              url: 'glossary/terms',
-                              success: function(data){
-                                      //do something with the data
-                                      data.forEach(function(term){
-                                          for(var key in term){
-                                                 $('<dt>'+key+'</dt>').appendTo(theList);
-                                                 $('<dd>'+term[key]+'</dd>').appendTo(theList);
-                                                 
-                                              }
-                                      });
-                                  }
-                          });
-                      </script>
+
+                      <!-- Javascript code moved into glossary.js -->
+                      <script type='text/javascript' src='assets/js/glossary.js'></script>
+
         </body>
     </html>
