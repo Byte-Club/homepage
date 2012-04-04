@@ -78,6 +78,7 @@ function defineTerm(evt) {
     //empty out the definition element, and inject the inputBox 
     definitionElement.empty();
     inputBox.appendTo(definitionElement);
+    inputBox.focus();
 
     //create a save button
     var  saveButton = $('<button class="save-definition">save</button>');
