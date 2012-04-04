@@ -16,7 +16,7 @@ header {
   left: 0;
   right: 0;
   top: 0;
-  height: 30px;
+  height: 40px;
   z-index: 100;
   }
   
@@ -45,7 +45,7 @@ header {
 #theList {
   margin: 0;
   position: absolute;
-  top: 30px; left: 0; right: 0;
+  top: 40px; left: 0; right: 0;
   padding: 10px;
   }
 
