@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      ByteClub Editor
+    </title>
+
+    <script type='text/javascript'>
+      //bootstrap our base tag(for local development)
+      var baseTag = document.createElement('base');
+      if (window.location.protocol === 'file:') { baseTag.setAttribute('href', './'); } 
+      else { baseTag.setAttribute('href', '/editor/'); }
+      document.head.appendChild(baseTag);
+    </script>
+
+    <!-- CodeMirror -->
+    <script src="vendor/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="vendor/codemirror/lib/codemirror.css">
+    <script src="vendor/codemirror/mode/javascript/javascript.js"></script>
+
+    <!-- jQuery and Ember -->
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script src="vendor/ember.js"></script>
+  
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="css/editor.css">
+
+  </head>
+  
+  <body class='BC'>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('http://localhost:3005');
+    </script>
+    <script src="js/editor.js"></script>
+  </body>
+
+</html>

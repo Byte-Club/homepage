@@ -1,0 +1,11 @@
+.BC .CodeMirror pre.CodeMirror-cursor {
+  border: 0;
+  padding: 0;
+  width: 8px;
+  background-color: #ddd;
+
+}
+
+.highlighted-red{
+  background-color: red !important;
+}
