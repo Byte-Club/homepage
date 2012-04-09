@@ -19,6 +19,41 @@ webServer.get('/', function(request, response){
     response.sendfile(__dirname + '/site/index.html');
 });
 
+
+/** load our glossary module */
+var glossary = require('./server/glossary');
+
+/** use glossary methods for routes */
+webServer.get('/glossary/terms/:term?', glossary.index);
+webServer.post('/glossary/terms', glossary.create);
+webServer.put('/glossary/terms/:term', glossary.update);
+
+
+
+/** Generic app resources router */
+webServer.get('/:appname', function(request, response){
+  var file = __dirname + '/site/apps/' + request.params.appname + '/index.html';
+  path.exists(file, function(exists){
+    if(exists){
+      response.sendfile(file);
+    } else {
+      response.send(404);
+    }
+  });
+});
+webServer.get('/:appname/*', function(request, response){
+  var file = __dirname + '/site/apps' + request.url;
+  console.log(file);
+  //if the file exists, send it, otherwise 404
+  path.exists(file, function(exists){
+    if(exists){
+      response.sendfile(file);
+    } else {
+      response.send(404);
+    }
+  });
+});
+
 /** handle all other GET requests */
 webServer.get('/:filename.:format?', function(request, response){
   var fmt = request.params.format || 'html', //default to html format
@@ -33,13 +68,5 @@ webServer.get('/:filename.:format?', function(request, response){
     }
   });
 });
-
-/** load our glossary module */
-var glossary = require('./server/glossary');
-
-/** use glossary methods for routes */
-webServer.get('/glossary/terms/:term?', glossary.index);
-webServer.post('/glossary/terms', glossary.create);
-webServer.put('/glossary/terms/:term', glossary.update);
 
 

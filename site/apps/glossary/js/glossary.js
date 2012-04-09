@@ -1,7 +1,7 @@
 function updateList() {
     var theList = $('#theList');
     $.ajax({
-        url: 'glossary/terms',
+        url: '/glossary/terms',
         //type defaults to 'GET' 
         success: function(data) {
             //clear out the current list
@@ -44,7 +44,7 @@ function addNewTerm(evt) {
 
     //begin ajax
     $.ajax({
-        url: 'glossary/terms',
+        url: '/glossary/terms',
         type: 'POST', //POST creates terms
         data: {
             term: $('#newTerm').val()
@@ -107,7 +107,7 @@ function saveDefinition(evt) {
     
     //the url is created dynamically by adding the term
     //- note that we change spaces into underscores
-    var termUrl = "glossary/terms/" + term.replace(/\s/g, '_');
+    var termUrl = "/glossary/terms/" + term.replace(/\s/g, '_');
 
     $.ajax({
         url: termUrl, //use the url we created above

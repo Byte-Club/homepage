@@ -2,7 +2,14 @@
 <html>
     <head>
       <title>ByteClub Glossary</title>
-      <link rel='stylesheet' type='text/css' href='assets/css/glossary.css'>
+      <script type='text/javascript'>
+        //bootstrap our base tag(for local development)
+        var baseTag = document.createElement('base');
+        if(window.location.protocol === 'file:'){ baseTag.setAttribute('href', './'); }
+        else { baseTag.setAttribute('href', '/glossary/'); }
+        document.head.appendChild(baseTag);
+      </script>
+      <link rel='stylesheet' type='text/css' href='css/glossary.css'>
 
     </head>
         <body>
@@ -26,7 +33,7 @@
                       <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 
                       <!-- Javascript code moved into glossary.js -->
-                      <script type='text/javascript' src='assets/js/glossary.js'></script>
+                      <script type='text/javascript' src='js/glossary.js'></script>
 
         </body>
     </html>
