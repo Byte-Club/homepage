@@ -1,33 +1,23 @@
-var Editor = Ember.Object.create({ 
-
-  options: {
-    value: "function myScript(){return 100;}\n",
-    mode:  "javascript",
-    lineNumbers: true,
-    tabSize: 2, 
-
-    onChange: function(instance, tc, user){
-      console.log('onChange:', tc.text);
-      socket.emit('edit', tc);
-
-      //TODO: send to server
-    }
-  }
-
+var Editor = Ember.Object.create({
 });
 
-Editor.codeMirror = CodeMirror(document.body, Editor.options);
+Editor.aceEditor = ace.edit("editor");
+Editor.aceEditor.getSession().setMode("ace/mode/javascript");
+Editor.aceEditor.getSession().setTabSize(2);
+Editor.aceEditor.getSession().setUseSoftTabs(true);
+Editor.aceEditor.setHighlightActiveLine(false);
+
+Editor.aceEditor.getSession().on('change', function(evt){
+  if(!evt.remote){
+    socket.emit('edit', evt.data);  
+  }
+});
 
 socket.on('id', function(id){
-  console.log(id);
   Editor.socketID = id;
 });
 
 socket.on('update', function(update){
-  if(update.sender === Editor.socketID){ return;}
-  var data = update.data;
-
-  Editor.codeMirror.replaceRange(data.text.join(''), data.from, data.to);
-  // Editor.codeMirror.onChange = Editor.codeMirror._onChange;
-
-})
+  if(update.sender === Editor.socketID){ return; }
+  Editor.aceEditor.getSession().doc.applyDeltas([update.data], true);
+});

@@ -13,10 +13,9 @@
       document.head.appendChild(baseTag);
     </script>
 
-    <!-- CodeMirror -->
-    <script src="vendor/codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="vendor/codemirror/lib/codemirror.css">
-    <script src="vendor/codemirror/mode/javascript/javascript.js"></script>
+    <!-- Ace -->
+    <script src="vendor/ace/ace-uncompressed.js"></script>
+    <script src="vendor/ace/mode-javascript.js"></script>
 
     <!-- jQuery and Ember -->
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
@@ -28,6 +27,9 @@
   </head>
   
   <body class='BC'>
+
+    <div id='editor'></div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io.connect('http://localhost:3005');
