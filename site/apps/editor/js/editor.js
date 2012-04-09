@@ -1,5 +1,5 @@
 var Editor = Ember.Object.create({
-  openFile: function(fileName){
+  openFile: function(fileName, fromRemote){
     $.ajax({
       url: '/editor/open',
       type: 'POST',
@@ -8,10 +8,9 @@ var Editor = Ember.Object.create({
       success: function(data, status, xhr){
         $('#editor').text(data);
         Editor.initEditor();
-        // console.log(typeof data);
-        // setTimeout(function(editor){
-          // this.aceEditor.getSession().setValue(data);   
-        // }, 1, this)
+        if(!fromRemote){
+          socket.emit('fileOpened', fileName);        
+        }        
       }.bind(this)
     })
   },
@@ -44,4 +43,9 @@ socket.on('id', function(id){
 socket.on('update', function(update){
   if(update.sender === Editor.socketID){ return; }
   Editor.aceEditor.getSession().doc.applyDeltas([update.data], true);
+});
+
+socket.on('openFile', function(data){
+  if(data.sender === Editor.socketID){ return; }
+  Editor.openFile(data.fileName, true);
 });

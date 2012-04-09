@@ -10,6 +10,9 @@ var Editor = {
       socket.on('edit', function (data) {
         socket.broadcast.emit('update', {sender: socket.id, data: data});
       });
+      socket.on('fileOpened', function (fileName) {
+        socket.broadcast.emit('openFile', {sender: socket.id, fileName: fileName});
+      });
     });
   },
 
