@@ -69,6 +69,5 @@ webServer.get('/:filename.:format?', function(request, response){
   });
 });
 
-
 var editor = require('./server/editor');
-editor.init();
+editor.init(webServer);
