@@ -1,22 +1,30 @@
 var Editor = Ember.Object.create({
   openFile: function(fileName, fromRemote){
-    $.ajax({
-      url: '/editor/open',
-      type: 'POST',
-      data: { fileName: fileName },
+    // $.ajax({
+    //   url: '/editor/open',
+    //   type: 'POST',
+    //   data: { fileName: fileName },
 
-      success: function(data, status, xhr){
-        $('#editor').text(data);
-        Editor.initEditor();
-        if(!fromRemote){
-          socket.emit('fileOpened', fileName);        
-        }        
-      }.bind(this)
-    })
+    //   success: function(data, status, xhr){
+    //     $('#editor').text(data);
+    //     Editor.initEditor();
+    //     if(!fromRemote){
+    //       socket.emit('fileOpened', fileName);        
+    //     }        
+    //   }.bind(this)
+    // })
   },
 
-  saveFile: function(fileName){
-    //TODO: save to server
+  saveFile: function(){
+    socket.emit('save', Editor.aceEditor.getSession().getValue());
+  },
+
+  newSession: function(editorID){
+    if(editorID){
+      Editor.openFile(editorID);
+    } else {
+      this.initEditor();
+    }
   },
 
   initEditor: function(){
@@ -28,11 +36,13 @@ var Editor = Ember.Object.create({
     this.aceEditor.getSession().on('change', function(evt){
       if(!evt.remote){
         socket.emit('edit', evt.data);  
+        socket.emit('save', Editor.aceEditor.getSession().getValue());  
       }
     });
   }
 });
 
+// var editorID = window.location.pathname.split('/')[2];
 Editor.initEditor();
 
 
@@ -46,6 +56,6 @@ socket.on('update', function(update){
 });
 
 socket.on('openFile', function(data){
-  if(data.sender === Editor.socketID){ return; }
-  Editor.openFile(data.fileName, true);
+  $('#editor').text(data.fileData);
+  Editor.initEditor();
 });

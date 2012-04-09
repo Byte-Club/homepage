@@ -1,11 +1,16 @@
 //include libraries
-var path      = require('path'),
+var fs        = require('fs'),
+    path      = require('path'),
     express   = require('express'),
+    socketio = require('socket.io');
+
     
 //setup webserver object
-    webServer = express.createServer();
+var webServer = express.createServer();
 webServer.use(express.bodyParser());
 webServer.listen(3005);
+
+var socketServer = socketio.listen(webServer);
 
 
 /** forward assests requests to site/assets folder */
@@ -30,6 +35,49 @@ webServer.put('/glossary/terms/:term', glossary.update);
 
 
 
+var editor = require('./server/editor');
+
+webServer.get('/editor/:id', function(request, response){
+  var index = __dirname + '/site/apps/editor/index.html',
+      file = __dirname + '/server/editor/sessions/'+ request.params.id;
+  
+  path.exists(index, function(exists){
+    if(exists){
+      response.sendfile(index);
+      editor.create(socketServer).open(request.params.id);
+    } else {
+      response.send(404);
+    }
+  });
+
+});
+
+webServer.post('/editor/open', function(request, response){
+  var file = __dirname + '/' + request.body.fileName;
+
+  path.exists(file, function(exists){
+    if(exists){
+     response.sendfile(file);
+    } else {
+      response.send(404);
+    }
+  });
+});
+
+webServer.post('/editor/save', function(request, response){
+  var file = __dirname + '/' + request.body.fileName;
+
+  path.exists(file, function(exists){
+    if(exists){
+     response.sendfile(file);
+    } else {
+      response.send(404);
+    }
+  });
+});
+
+
+
 /** Generic app resources router */
 webServer.get('/:appname', function(request, response){
   var file = __dirname + '/site/apps/' + request.params.appname + '/index.html';
@@ -43,7 +91,6 @@ webServer.get('/:appname', function(request, response){
 });
 webServer.get('/:appname/*', function(request, response){
   var file = __dirname + '/site/apps' + request.url;
-  console.log(file);
   //if the file exists, send it, otherwise 404
   path.exists(file, function(exists){
     if(exists){
@@ -68,19 +115,4 @@ webServer.get('/:filename.:format?', function(request, response){
     }
   });
 });
-
-var editor = require('./server/editor');
-editor.init(webServer);
-
-webServer.post('/editor/open', function(request, response){
-    var file = __dirname + '/' + request.body.fileName;
-
-    path.exists(file, function(exists){
-      if(exists){
-       response.sendfile(file);
-      } else {
-        response.send(404);
-      }
-    });
-  });
 
