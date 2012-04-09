@@ -71,3 +71,16 @@ webServer.get('/:filename.:format?', function(request, response){
 
 var editor = require('./server/editor');
 editor.init(webServer);
+
+webServer.post('/editor/open', function(request, response){
+    var file = __dirname + '/' + request.body.fileName;
+
+    path.exists(file, function(exists){
+      if(exists){
+       response.sendfile(file);
+      } else {
+        response.send(404);
+      }
+    });
+  });
+
