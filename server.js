@@ -35,7 +35,9 @@ webServer.put('/glossary/terms/:term', glossary.update);
 
 
 
-var editor = require('./server/editor');
+var Editor = require('./server/editor');
+var editors = {};
+
 
 webServer.get('/editor/:id', function(request, response){
   var index = __dirname + '/site/apps/editor/index.html',
@@ -44,7 +46,9 @@ webServer.get('/editor/:id', function(request, response){
   path.exists(index, function(exists){
     if(exists){
       response.sendfile(index);
-      editor.create(socketServer).open(request.params.id);
+      if(!editors[request.params.id]){
+        editors[request.params.id] = new Editor().create(socketServer).open(request.params.id);  
+      }      
     } else {
       response.send(404);
     }

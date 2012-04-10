@@ -1,30 +1,12 @@
 var Editor = Ember.Object.create({
-  openFile: function(fileName, fromRemote){
-    // $.ajax({
-    //   url: '/editor/open',
-    //   type: 'POST',
-    //   data: { fileName: fileName },
 
-    //   success: function(data, status, xhr){
-    //     $('#editor').text(data);
-    //     Editor.initEditor();
-    //     if(!fromRemote){
-    //       socket.emit('fileOpened', fileName);        
-    //     }        
-    //   }.bind(this)
-    // })
-  },
+  socket: io.connect(window.location.pathname),
+
+  online: false,
+  queue: [],
 
   saveFile: function(){
-    socket.emit('save', Editor.aceEditor.getSession().getValue());
-  },
-
-  newSession: function(editorID){
-    if(editorID){
-      Editor.openFile(editorID);
-    } else {
-      this.initEditor();
-    }
+    socket.emit('save', this.aceEditor.getSession().getValue());
   },
 
   initEditor: function(){
@@ -35,27 +17,63 @@ var Editor = Ember.Object.create({
     this.aceEditor.setHighlightActiveLine(false);
     this.aceEditor.getSession().on('change', function(evt){
       if(!evt.remote){
-        socket.emit('edit', evt.data);  
-        socket.emit('save', Editor.aceEditor.getSession().getValue());  
+        console.log(evt.data);
+        if(this.get('online')){
+          this.socket.emit('edit', evt.data);            
+        } else {
+          console.log('saving change to queue');
+          this.get('queue').pushObject(evt.data);
+        }
+        // Editor.saveFile();
       }
+    }.bind(this));
+  },
+
+  onlineDidChange: function(){
+    console.log('onlineDidChange');
+    if(this.get('online')){
+      clearInterval(this.offlineInterval);
+      this.get('queue').forEach(function(evtData){
+        this.socket.emit('edit', evtData);       
+      }.bind(this));
+      //TODO: flush this properly
+      this.set('queue', []);
+    } 
+  }.observes('online'),
+
+  initSocket: function(){
+    this.socket.on('id', function(id){
+      Editor.socketID = id;
     });
+
+    this.socket.on('update', function(update){
+      Editor.aceEditor.getSession().doc.applyDeltas([update.data], true);
+    });
+
+    this.socket.on('openFile', function(data){
+      $('#editor').text(data.fileData);
+      Editor.initEditor();
+    });
+
+    this.socket.on('connect', function(){
+      console.log('online');
+      Editor.set('online', true);
+
+    });
+
+    this.socket.on('reconnect', function(){
+      console.log('online');
+      Editor.set('online', true);
+
+    });
+    this.socket.on('disconnect', function(){
+      console.log('offline');
+      this.set('online', false);
+    }.bind(this));    
   }
 });
 
-// var editorID = window.location.pathname.split('/')[2];
+
+
+Editor.initSocket();
 Editor.initEditor();
-
-
-socket.on('id', function(id){
-  Editor.socketID = id;
-});
-
-socket.on('update', function(update){
-  if(update.sender === Editor.socketID){ return; }
-  Editor.aceEditor.getSession().doc.applyDeltas([update.data], true);
-});
-
-socket.on('openFile', function(data){
-  $('#editor').text(data.fileData);
-  Editor.initEditor();
-});
