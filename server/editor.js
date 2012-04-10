@@ -10,7 +10,7 @@ function Editor(){
 
   this.open = function(id){
     this.io.of('/editor/'+id).on('connection', function(socket){
-      console.log('connect');
+      // console.log('connect');
       socket.emit('id', socket.id);
 
       this.fileName = 'server/editor/sessions/'+ id;
@@ -29,8 +29,8 @@ function Editor(){
       
 
       socket.on('edit', function (data) {
-        console.log('edit');
-        if(this[data.action]) { this[data.action].call(this, data.range, data.text); }
+        // console.log('===edit:',data);
+        if(this[data.action]) { this[data.action].call(this, data); }
         socket.broadcast.emit('update', {sender: socket.id, data: data});
       }.bind(this));
 
@@ -62,11 +62,15 @@ function Editor(){
     return pos;        
   };
 
-  this.insertText = function(range, text){
-    fs.readFile(this.fileName, 'utf8', function(err, data){
-      var pos = getPosition(data, range.start.row, range.start.column);
+  this.insertText = function(data){
+    var range = data.range,
+        lines = data.lines, 
+        text = data.lines ? data.lines.join('\n') : data.text;
+
+    fs.readFile(this.fileName, 'utf8', function(err, fileData){
+      var pos = getPosition(fileData, range.start.row, range.start.column);
   
-      console.log('====',pos);
+      // console.log('====',pos);
       var file = fs.createWriteStream(this.fileName, {
         flags: 'a+',
         mode: 0666,
@@ -78,17 +82,21 @@ function Editor(){
     }.bind(this));
   };
 
-  this.removeText = function(range, text){
-    fs.readFile(this.fileName, 'utf8', function(err, data){
-    
-      var startPos = getPosition(data, range.start.row, range.start.column),
-          endPos = getPosition(data, range.end.row, range.end.column),
-          begin = data.substring(0,startPos),
-          end = data.substring(endPos);
+  this.removeText = function(data){
+    var range = data.range,
+        lines = data.lines, 
+        text = data.lines ? data.lines.join('\n') : data.text;
 
-      console.log('===pos:',startPos, endPos);
-      console.log('===begin:',begin);
-      console.log('===end:',end);
+    fs.readFile(this.fileName, 'utf8', function(err, fileData){
+    
+      var startPos = getPosition(fileData, range.start.row, range.start.column),
+          endPos = getPosition(fileData, range.end.row, range.end.column),
+          begin = fileData.substring(0,startPos),
+          end = fileData.substring(endPos);
+
+      // console.log('===pos:',startPos, endPos);
+      // console.log('===begin:',begin);
+      // console.log('===end:',end);
       fs.writeFile(this.fileName, begin+end, function(err){
         if(err) throw err;
       });
@@ -96,6 +104,7 @@ function Editor(){
     }.bind(this));
   };
 
+  this.insertLines = this.insertText;
   this.removeLines = this.removeText;
 };
 
